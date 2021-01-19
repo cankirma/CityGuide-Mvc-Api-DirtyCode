@@ -13,7 +13,7 @@ namespace api.Models
         public DateTime DateAdded { get; set; }
         public bool IsMain { get; set; }
         public string PublicId { get; set; }
-        public string CityId { get; set; }
+        public int CityId { get; set; }
 
         public City City { get; set; }
     }
