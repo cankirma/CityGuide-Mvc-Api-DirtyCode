@@ -11,7 +11,13 @@ namespace api.Data
     {
         public DataContext( DbContextOptions<DataContext> options) : base(options)
         {
+            
+        }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+            optionsBuilder.UseSqlServer("Server=.;Database=CityGuide;Trusted_Connection=true;");
         }
 
         public DbSet<City> Cities { get; set; }
