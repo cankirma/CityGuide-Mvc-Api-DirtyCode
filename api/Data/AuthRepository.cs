@@ -43,7 +43,7 @@ namespace api.Data
                 return null;
             }
 
-            if (Equals(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
+            if ((!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)))
             {
                 return null;
             }
@@ -57,10 +57,14 @@ namespace api.Data
             {
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 for (int i = 0; i < computedHash.Length; i++)
+                {
                     if (computedHash[i] != userPasswordHash[i])
+                    {
                         return false;
-                    else
-                        return true;
+                    }
+                }
+
+                return true;
             }
         }
 

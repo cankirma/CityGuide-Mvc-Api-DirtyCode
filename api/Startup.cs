@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using api.Data;
+using api.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,8 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("Appsettings:Token").Value);
-
-            services.AddScoped<IAuthRepository,AuthRepository>()
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddMvc();
             services.AddCors();
             services.AddControllers().AddJsonOptions(opt =>
@@ -43,6 +44,13 @@ namespace api
                 ValidateAudience = false
 
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,9 +63,10 @@ namespace api
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()); 
+            //app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()); 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseAuthentication();
+        
         }
     }
 }
